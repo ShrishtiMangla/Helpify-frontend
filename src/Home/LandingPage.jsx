@@ -1,8 +1,19 @@
 import Header from "./components/Header";
 import Footer from "../Components/Footer";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import API from "../Utils/API";
 
 const LandingPage = () => {
+  useEffect(() => {
+    API.get("/")
+      .then((res) => {
+        console.log("Backend response:", res.data);
+      })
+      .catch((err) => {
+        console.log("API error:", err);
+      });
+  }, []);
   return (
     <>
       <Header />
