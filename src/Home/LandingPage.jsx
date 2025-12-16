@@ -1,19 +1,10 @@
 import Header from "./components/Header";
 import Footer from "../Components/Footer";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
-import API from "../Utils/API";
+
 
 const LandingPage = () => {
-  useEffect(() => {
-    API.get("/")
-      .then((res) => {
-        console.log("Backend response:", res.data);
-      })
-      .catch((err) => {
-        console.log("API error:", err);
-      });
-  }, []);
+  
   return (
     <>
       <Header />
@@ -47,16 +38,16 @@ const LandingPage = () => {
 
           <div className="flex flex-col sm:flex-row gap-5 justify-center">
             <Link
-              to="/donate/money"
-              className="px-8 py-4 bg-slate-900 text-white text-base font-medium rounded-lg hover:bg-slate-800 transition"
+              to="/signup"
+              className="px-8 py-4 bg-slate-900 text-white text-xl font-bold rounded-lg hover:bg-slate-800 transition"
             >
-              Donate Money
+              Register
             </Link>
             <Link
-              to="/donate/goods"
-              className="px-8 py-4 border border-slate-300 text-slate-900 text-base font-medium rounded-lg hover:bg-slate-100 transition"
+              to="/login"
+              className="px-8 py-4 border border-slate-300 text-slate-900 font-bold text-xl rounded-lg hover:bg-slate-100 transition"
             >
-              Donate Goods
+              Login
             </Link>
           </div>
         </div>

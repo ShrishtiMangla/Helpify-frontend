@@ -1,6 +1,18 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const Login = () => {
+  const[loginData, setLoginData] = useState({
+    email: "",
+    password: ""
+  })
+  const handleLogin = (e) => {
+    e.preventDefault();
+    console.log("Logging in with data:", loginData);
+    // Implement login logic here
+    //post request to backend with loginData
+
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-50 via-white to-blue-50 px-4">
       
@@ -13,13 +25,15 @@ const Login = () => {
           Login to continue making an impact
         </p>
 
-        <form className="space-y-6">
+        <form onSubmit={handleLogin} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Email
             </label>
             <input
               type="email"
+              value = {loginData.email}
+              onChange={(e) => setLoginData({...loginData, email: e.target.value})}
               placeholder="you@example.com"
               className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -31,12 +45,14 @@ const Login = () => {
             </label>
             <input
               type="password"
+              value={loginData.password}
+              onChange={(e) => setLoginData({...loginData, password: e.target.value})}
               placeholder="••••••••"
               className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
 
-          <button
+          <button 
             type="submit"
             className="w-full py-3 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition"
           >
