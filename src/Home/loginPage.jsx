@@ -38,7 +38,10 @@ const Login = () => {
         console.log("LOGIN RESPONSE 👉", res);
 
         const userRole = res.data.role; //ye backend se aayega
-
+          localStorage.setItem(
+          "user",
+          JSON.stringify(res.data.user)
+        );
         if (userRole === "user") navigate("/user/dashboard");
         if (userRole === "ngo") navigate("/ngo/dashboard");
         if (userRole === "agent") navigate("/agent/dashboard");
