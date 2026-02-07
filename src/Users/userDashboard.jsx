@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import "./userDashboard.css";
+import { useNavigate } from "react-router-dom";
+
 
 const UserDashboard = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [activeFilter, setActiveFilter] = useState('all');
 
@@ -128,7 +131,8 @@ const UserDashboard = () => {
             <p className="card-description">
               Contribute items like clothes, books, food, or other essentials to help those in need.
             </p>
-            <button className="btn-action">Donate Goods</button>
+            <button 
+            onClick={()=>navigate("/ngos?type=goods")} className="btn-action">Donate Goods</button>
           </div>
 
           <div className="action-card" onClick={() => console.log('Donate Money')}>
@@ -137,7 +141,8 @@ const UserDashboard = () => {
             <p className="card-description">
               Make a secure financial contribution to verified NGOs and track where your money goes.
             </p>
-            <button className="btn-action">Donate Money</button>
+            <button
+            onClick={()=>navigate("/ngos?type=money")} className="btn-action">Donate Money</button>
           </div>
         </div>
 

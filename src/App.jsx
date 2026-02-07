@@ -2,10 +2,14 @@ import { Routes, Route } from "react-router-dom";
 import LandingPage from "./Home/LandingPage";
 import Login from "./Home/loginPage";
 import Signup from "./Home/signupPage";
+
 import User from "./Users/userDashboard";
 import Ngo from "./ngos/ngoDashboard";
 import Agent from "./Delivery/deliveryAgentDashboard";
 import AdminDashboard from "./Admin/adminDashboard";
+
+import NgoList from "./ngos/ngoList";
+import DonatePage from "./donation/donation";
 
 function App() {
   return (
@@ -17,6 +21,8 @@ function App() {
       <Route path="/ngo/dashboard" element={<Ngo />} />
       <Route path = "/agent/dashboard" element={<Agent />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
+      <Route path="/ngos" element={<NgoList />} />
+      <Route path="/donate/:ngoId" element={<DonatePage />} />
     
     </Routes>
   );
