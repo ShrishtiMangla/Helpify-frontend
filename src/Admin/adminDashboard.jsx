@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-import "./AdminDashboard.css";
+import "./adminDashboard.css";
 
 const AdminDashboard = () => {
   const [admin, setAdmin] = useState(null);
