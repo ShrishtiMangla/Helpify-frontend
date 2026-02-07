@@ -10,6 +10,7 @@ import AdminDashboard from "./Admin/adminDashboard";
 
 import NgoList from "./ngos/ngoList";
 import DonatePage from "./donation/donation";
+import TrackDonation from "./donation/trackDonations";
 
 function App() {
   return (
@@ -23,6 +24,8 @@ function App() {
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/ngos" element={<NgoList />} />
       <Route path="/donate/:ngoId" element={<DonatePage />} />
+      <Route path="/track/:donationId" element={<TrackDonation />} />
+
     
     </Routes>
   );

@@ -3,8 +3,9 @@ import { useParams, useSearchParams } from "react-router-dom";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import "./donation.css";
+import { useNavigate } from "react-router-dom";
 
-    const DonatePage = () => {
+const DonatePage = () => {
     const { ngoId } = useParams();
     const [searchParams] = useSearchParams();
     const donationType = searchParams.get("type"); // money / goods
@@ -15,6 +16,44 @@ import "./donation.css";
     const [amount, setAmount] = useState("");
     const [items, setItems] = useState("");
     const [address, setAddress] = useState("");
+
+
+    const navigate = useNavigate();
+
+    const handleGoodsDonation = async () => {
+    if (!items || !address) {
+        alert("Please fill all details");
+        return;
+    }
+
+    try {
+        const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/donations/goods`,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+            donorId: user._id,
+            ngoId,
+            items,
+            address
+            })
+        }
+        );
+
+        const data = await res.json();
+
+        alert("Delivery agent will reach you in 3–5 working days 🚚");
+
+        // 👉 Navigate to tracking page
+        navigate(`/track/${data.donationId}`);
+
+    } catch (error) {
+        console.error(error);
+        alert("Failed to schedule delivery");
+    }
+    };
+
 
     const saveDonation = async (paymentId) => {
     try {
@@ -140,7 +179,7 @@ import "./donation.css";
               placeholder="Enter your address"
             />
 
-            <button onClick={handleSubmit}>
+            <button onClick={handleGoodsDonation}>
               Schedule Delivery Agent
             </button>
           </div>

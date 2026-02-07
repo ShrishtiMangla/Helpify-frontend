@@ -5,9 +5,12 @@ import "./deliveryAgentDashboard.css";
 
 const DeliveryAgentDashboard = () => {
   const [agent, setAgent] = useState(null);
-  const [activeTab, setActiveTab] = useState('completed'); // completed or scheduled
-  const [activeFilter, setActiveFilter] = useState('all');
+  const [donations, setDonations] = useState([]);
+  const [activeTab, setActiveTab] = useState("completed");
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [loading, setLoading] = useState(true);
 
+  // get logged-in agent
   useEffect(() => {
     const storedAgent = localStorage.getItem("user");
     if (storedAgent) {
@@ -15,200 +18,83 @@ const DeliveryAgentDashboard = () => {
     }
   }, []);
 
-  // Sample completed deliveries data
-  const completedDeliveries = [
-    {
-      id: 'DN12345',
-      type: 'money',
-      title: 'Monthly Food Distribution Program',
-      donor: 'Rajesh Kumar',
-      donorContact: '+91-9876543210',
-      ngo: 'Hope Foundation',
-      ngoContact: '+91-9876543220',
-      date: 'Jan 15, 2026',
-      deliveryDate: 'Jan 16, 2026',
-      amount: '₹5,000',
-      status: 'completed',
-      pickupLocation: 'Sector 15, Noida',
-      deliveryLocation: 'Sector 62, Noida'
-    },
-    {
-      id: 'DN12344',
-      type: 'goods',
-      title: 'Educational Books & Stationery',
-      donor: 'Priya Singh',
-      donorContact: '+91-9876543211',
-      ngo: "Children's Charity",
-      ngoContact: '+91-9876543221',
-      date: 'Jan 10, 2026',
-      deliveryDate: 'Jan 12, 2026',
-      amount: '50 items',
-      status: 'completed',
-      pickupLocation: 'Dwarka, Delhi',
-      deliveryLocation: 'Connaught Place, Delhi'
-    },
-    {
-      id: 'DN12342',
-      type: 'goods',
-      title: 'Winter Clothing Collection',
-      donor: 'Suresh Reddy',
-      donorContact: '+91-9876543212',
-      ngo: 'Warmth for All',
-      ngoContact: '+91-9876543222',
-      date: 'Dec 28, 2025',
-      deliveryDate: 'Dec 30, 2025',
-      amount: '25 items',
-      status: 'completed',
-      pickupLocation: 'Gurgaon Sector 14',
-      deliveryLocation: 'Mehrauli, Delhi'
-    },
-    {
-      id: 'DN12341',
-      type: 'money',
-      title: 'Emergency Relief Fund',
-      donor: 'Meena Iyer',
-      donorContact: '+91-9876543213',
-      ngo: 'Disaster Relief Org',
-      ngoContact: '+91-9876543223',
-      date: 'Dec 20, 2025',
-      deliveryDate: 'Dec 21, 2025',
-      amount: '₹15,000',
-      status: 'completed',
-      pickupLocation: 'Vasant Kunj, Delhi',
-      deliveryLocation: 'Saket, Delhi'
-    },
-    {
-      id: 'DN12340',
-      type: 'goods',
-      title: 'Food Supplies',
-      donor: 'Arjun Malhotra',
-      donorContact: '+91-9876543214',
-      ngo: 'Food Bank India',
-      ngoContact: '+91-9876543224',
-      date: 'Dec 15, 2025',
-      deliveryDate: 'Dec 17, 2025',
-      amount: '100 items',
-      status: 'completed',
-      pickupLocation: 'Rohini, Delhi',
-      deliveryLocation: 'Karol Bagh, Delhi'
-    }
-  ];
+useEffect(() => {
+  if (!agent) return;
 
-  // Sample scheduled deliveries data
-  const scheduledDeliveries = [
-    {
-      id: 'DN12346',
-      type: 'money',
-      title: 'Health Care Support Fund',
-      donor: 'Vikram Sharma',
-      donorContact: '+91-9876543215',
-      ngo: 'Health First Foundation',
-      ngoContact: '+91-9876543225',
-      scheduledDate: 'Jan 20, 2026',
-      scheduledTime: '10:00 AM',
-      amount: '₹12,000',
-      status: 'scheduled',
-      priority: 'high',
-      pickupLocation: 'Greater Kailash, Delhi',
-      deliveryLocation: 'Lajpat Nagar, Delhi'
-    },
-    {
-      id: 'DN12347',
-      type: 'goods',
-      title: 'School Supplies Donation',
-      donor: 'Sneha Kapoor',
-      donorContact: '+91-9876543216',
-      ngo: 'Education for All',
-      ngoContact: '+91-9876543226',
-      scheduledDate: 'Jan 21, 2026',
-      scheduledTime: '2:00 PM',
-      amount: '75 items',
-      status: 'scheduled',
-      priority: 'medium',
-      pickupLocation: 'Sarita Vihar, Delhi',
-      deliveryLocation: 'Nehru Place, Delhi'
-    },
-    {
-      id: 'DN12348',
-      type: 'money',
-      title: 'Animal Welfare Fund',
-      donor: 'Ramesh Gupta',
-      donorContact: '+91-9876543217',
-      ngo: 'Animal Care Society',
-      ngoContact: '+91-9876543227',
-      scheduledDate: 'Jan 22, 2026',
-      scheduledTime: '11:30 AM',
-      amount: '₹8,500',
-      status: 'scheduled',
-      priority: 'low',
-      pickupLocation: 'Pitampura, Delhi',
-      deliveryLocation: 'Model Town, Delhi'
-    },
-    {
-      id: 'DN12349',
-      type: 'goods',
-      title: 'Medical Equipment Donation',
-      donor: 'Anjali Verma',
-      donorContact: '+91-9876543218',
-      ngo: 'Health Care Trust',
-      ngoContact: '+91-9876543228',
-      scheduledDate: 'Jan 23, 2026',
-      scheduledTime: '9:00 AM',
-      amount: '15 items',
-      status: 'scheduled',
-      priority: 'high',
-      pickupLocation: 'Janakpuri, Delhi',
-      deliveryLocation: 'Rajouri Garden, Delhi'
-    },
-    {
-      id: 'DN12350',
-      type: 'goods',
-      title: 'Blanket Distribution',
-      donor: 'Kiran Kumar',
-      donorContact: '+91-9876543219',
-      ngo: 'Winter Relief Org',
-      ngoContact: '+91-9876543229',
-      scheduledDate: 'Jan 24, 2026',
-      scheduledTime: '3:30 PM',
-      amount: '40 items',
-      status: 'scheduled',
-      priority: 'medium',
-      pickupLocation: 'Shahdara, Delhi',
-      deliveryLocation: 'Mayur Vihar, Delhi'
-    }
-  ];
+  fetch(`${import.meta.env.VITE_API_URL}/api/agent/donations`, {
+    method: "GET",
+    credentials: "include", // ✅ THIS SENDS COOKIES
+  })
+    .then(res => res.json())
+    .then(data => {
+      setDonations(Array.isArray(data) ? data : []);
+      setLoading(false);
+    })
+    .catch(err => {
+      console.error(err);
+      setLoading(false);
+    });
+}, [agent]);
 
-  const currentDeliveries = activeTab === 'completed' ? completedDeliveries : scheduledDeliveries;
-  
-  const filteredDeliveries = currentDeliveries.filter(delivery => 
-    activeFilter === 'all' || delivery.type === activeFilter
+
+
+  if (!agent || loading) {
+    return <p className="agent-loading-text">Loading...</p>;
+  }
+
+  // 🔹 split by status
+  const completedDeliveries = donations.filter(
+    d => d.status === "completed"
   );
 
-  // Calculate statistics
+  const scheduledDeliveries = donations.filter(
+    d => d.status === "pending" || d.status === "scheduled"
+  );
+
+  const currentDeliveries =
+    activeTab === "completed"
+      ? completedDeliveries
+      : scheduledDeliveries;
+
+  // 🔹 filter by type
+  const filteredDeliveries = currentDeliveries.filter(
+    d => activeFilter === "all" || d.donationType === activeFilter
+  );
+
+  // 🔹 stats
   const totalCompleted = completedDeliveries.length;
   const totalScheduled = scheduledDeliveries.length;
   const totalDeliveries = totalCompleted + totalScheduled;
 
-  if (!agent) {
-    return <p className="agent-loading-text">Loading...</p>;
-  }
-
   return (
     <div className="agent-dashboard-container-wrapper">
       <Header />
-    <div className="py-8"></div>
+      <div className="py-8"></div>
+
       <main className="agent-dashboard-container">
         {/* Agent Profile Header */}
         <div className="agent-header">
           <div className="agent-info">
             <div className="agent-avatar">
-              {agent.name ? agent.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'DA'}
+              {agent.name
+                ? agent.name
+                    .split(" ")
+                    .map(n => n[0])
+                    .join("")
+                    .toUpperCase()
+                    .slice(0, 2)
+                : "DA"}
             </div>
+
             <div className="agent-details">
-              <h1 className="agent-name">{agent.name?.charAt(0).toUpperCase() + agent.name?.slice(1)}</h1>
+              <h1 className="agent-name">
+                {agent.name?.charAt(0).toUpperCase() + agent.name?.slice(1)}
+              </h1>
+
               <span className="agent-badge">
                 🚚 Active Delivery Agent • Verified ✓
               </span>
+
               <div className="agent-stats">
                 <div className="agent-stat-item">
                   <span className="agent-stat-value">{totalDeliveries}</span>
@@ -225,7 +111,6 @@ const DeliveryAgentDashboard = () => {
               </div>
             </div>
           </div>
-         
         </div>
 
         {/* Quick Stats Cards */}
@@ -255,135 +140,109 @@ const DeliveryAgentDashboard = () => {
           </div>
         </div>
 
-        {/* Main Tabs */}
+        {/* Tabs */}
         <div className="agent-tabs-container">
           <div className="agent-main-tabs">
-            <button 
-              className={`agent-main-tab ${activeTab === 'completed' ? 'active' : ''}`}
-              onClick={() => setActiveTab('completed')}
+            <button
+              className={`agent-main-tab ${
+                activeTab === "completed" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("completed")}
             >
               ✅ Completed Deliveries
             </button>
-            <button 
-              className={`agent-main-tab ${activeTab === 'scheduled' ? 'active' : ''}`}
-              onClick={() => setActiveTab('scheduled')}
+
+            <button
+              className={`agent-main-tab ${
+                activeTab === "scheduled" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("scheduled")}
             >
               📅 Scheduled Deliveries
             </button>
           </div>
         </div>
 
-        {/* Deliveries Section */}
+        {/* Deliveries */}
         <div className="agent-section-header">
           <h2 className="agent-section-title">
-            {activeTab === 'completed' ? 'Completed Deliveries' : 'Scheduled Deliveries'}
+            {activeTab === "completed"
+              ? "Completed Deliveries"
+              : "Scheduled Deliveries"}
           </h2>
+
           <div className="agent-filter-tabs">
-            <button 
-              className={`agent-filter-tab ${activeFilter === 'all' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('all')}
-            >
-              All
-            </button>
-            <button 
-              className={`agent-filter-tab ${activeFilter === 'money' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('money')}
-            >
-              Money
-            </button>
-            <button 
-              className={`agent-filter-tab ${activeFilter === 'goods' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('goods')}
-            >
-              Goods
-            </button>
+            {["all", "money", "goods"].map(type => (
+              <button
+                key={type}
+                className={`agent-filter-tab ${
+                  activeFilter === type ? "active" : ""
+                }`}
+                onClick={() => setActiveFilter(type)}
+              >
+                {type === "all" ? "All" : type}
+              </button>
+            ))}
           </div>
         </div>
 
         <div className="agent-deliveries-list">
           {filteredDeliveries.length > 0 ? (
-            filteredDeliveries.map(delivery => (
-              <div key={delivery.id} className="agent-delivery-item">
+            filteredDeliveries.map(d => (
+              <div key={d._id} className="agent-delivery-item">
                 <div className="agent-delivery-header">
                   <div className="agent-delivery-main">
-                    {activeTab === 'scheduled' && (
+                    {activeTab === "scheduled" && (
                       <div className="scheduled-delivery-time">
-                        🕒 {delivery.scheduledDate} at {delivery.scheduledTime}
+                        🕒 {d.scheduledDate} at {d.scheduledTime}
                       </div>
                     )}
-                    <span className={`agent-delivery-type-badge ${delivery.type}`}>
-                      {delivery.type === 'money' ? '💵 Money' : '📦 Goods'}
+
+                    <span
+                      className={`agent-delivery-type-badge ${d.donationType}`}
+                    >
+                      {d.donationType === "money" ? "💵 Money" : "📦 Goods"}
                     </span>
-                    {activeTab === 'scheduled' && (
-                      <span className={`priority-badge ${delivery.priority}`} style={{ marginLeft: '0.5rem' }}>
-                        {delivery.priority} Priority
-                      </span>
-                    )}
-                    <h4 className="agent-delivery-title">{delivery.title}</h4>
+
+                    <h4 className="agent-delivery-title">
+                      Donation #{d._id.slice(-6)}
+                    </h4>
+
                     <div className="agent-delivery-route">
-                      <span>📍 {delivery.pickupLocation}</span>
+                      <span>📍 {d.pickupLocation}</span>
                       <span className="agent-delivery-route-arrow">→</span>
-                      <span>🏢 {delivery.deliveryLocation}</span>
+                      <span>🏢 {d.deliveryLocation}</span>
                     </div>
                   </div>
-                  <div className="agent-delivery-amount">{delivery.amount}</div>
+
+                  <div className="agent-delivery-amount">{d.amount}</div>
                 </div>
 
                 <div className="agent-delivery-details">
                   <div className="agent-detail-item">
                     <span className="agent-detail-label">Donor Details</span>
                     <span className="agent-detail-value">
-                      👤 {delivery.donor}
+                      👤 {d.donorId?.name}
                     </span>
-                    <span className="agent-detail-value" style={{ fontSize: '0.85rem', color: '#64748b' }}>
-                      📞 {delivery.donorContact}
+                    <span className="agent-detail-value">
+                      📞 {d.donorId?.phone}
                     </span>
                   </div>
 
                   <div className="agent-detail-item">
                     <span className="agent-detail-label">NGO Details</span>
                     <span className="agent-detail-value">
-                      🏢 {delivery.ngo}
+                      🏢 {d.ngoId?.name}
                     </span>
-                    <span className="agent-detail-value" style={{ fontSize: '0.85rem', color: '#64748b' }}>
-                      📞 {delivery.ngoContact}
+                    <span className="agent-detail-value">
+                      📞 {d.ngoId?.phone}
                     </span>
-                  </div>
-
-                  <div className="agent-detail-item">
-                    <span className="agent-detail-label">
-                      {activeTab === 'completed' ? 'Delivery Info' : 'Schedule'}
-                    </span>
-                    {activeTab === 'completed' ? (
-                      <>
-                        <span className="agent-detail-value">
-                          📅 Picked: {delivery.date}
-                        </span>
-                        <span className="agent-detail-value" style={{ fontSize: '0.85rem', color: '#64748b' }}>
-                          ✅ Delivered: {delivery.deliveryDate}
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="agent-detail-value">
-                          📅 {delivery.scheduledDate}
-                        </span>
-                        <span className="agent-detail-value" style={{ fontSize: '0.85rem', color: '#64748b' }}>
-                          🕒 {delivery.scheduledTime}
-                        </span>
-                      </>
-                    )}
                   </div>
 
                   <div className="agent-detail-item">
                     <span className="agent-detail-label">Status</span>
-                    <span className={`agent-status-badge ${delivery.status}`}>
-                      {delivery.status === 'completed' ? '✓ Completed' : 
-                       delivery.status === 'scheduled' ? '📅 Scheduled' : 
-                       '🚚 In Progress'}
-                    </span>
-                    <span className="agent-detail-value" style={{ fontSize: '0.85rem', color: '#64748b' }}>
-                      🆔 #{delivery.id}
+                    <span className={`agent-status-badge ${d.status}`}>
+                      {d.status}
                     </span>
                   </div>
                 </div>

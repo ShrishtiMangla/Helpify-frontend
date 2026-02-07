@@ -1,0 +1,81 @@
+.track-page {
+  min-height: 100vh;
+  background: #f7f9fc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  font-family: "Inter", sans-serif;
+}
+
+.track-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 520px;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
+
+.track-card h2 {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 24px;
+}
+
+.status-box {
+  background: #eef4ff;
+  border-radius: 14px;
+  padding: 18px;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.status-box span {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.status-box strong {
+  display: block;
+  font-size: 20px;
+  margin-top: 6px;
+  color: #2563eb;
+  text-transform: capitalize;
+}
+
+.agent-section {
+  margin-top: 10px;
+}
+
+.agent-section h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 14px;
+}
+
+.agent-card {
+  background: #f9fafb;
+  border-radius: 14px;
+  padding: 18px;
+  border: 1px solid #e5e7eb;
+}
+
+.agent-card p {
+  margin: 8px 0;
+  font-size: 15px;
+  color: #374151;
+}
+
+.agent-card span {
+  font-weight: 600;
+  color: #111827;
+}
+
+.loading {
+  font-size: 18px;
+  color: #64748b;
+}
