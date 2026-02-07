@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-import "./DeliveryAgentDashboard.css";
+import "./deliveryAgentDashboard.css";
 
 const DeliveryAgentDashboard = () => {
   const [agent, setAgent] = useState(null);

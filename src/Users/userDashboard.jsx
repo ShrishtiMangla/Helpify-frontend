@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-import "./UserDashboard.css";
+import "./userDashboard.css";
 
 const UserDashboard = () => {
   const [user, setUser] = useState(null);
