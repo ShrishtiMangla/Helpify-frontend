@@ -4,32 +4,96 @@ import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import "./donation.css";
 
-const DonatePage = () => {
-  const { ngoId } = useParams();
-  const [searchParams] = useSearchParams();
-  const donationType = searchParams.get("type"); // money / goods
+    const DonatePage = () => {
+    const { ngoId } = useParams();
+    const [searchParams] = useSearchParams();
+    const donationType = searchParams.get("type"); // money / goods
 
-  const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user"));
 
-  // Common states
-  const [amount, setAmount] = useState("");
-  const [items, setItems] = useState("");
-  const [address, setAddress] = useState("");
+    // Common states
+    const [amount, setAmount] = useState("");
+    const [items, setItems] = useState("");
+    const [address, setAddress] = useState("");
 
-  const handleSubmit = () => {
-    const donationData = {
-      donorId: user._id,
-      ngoId,
-      donationType,
-      amount: donationType === "money" ? amount : undefined,
-      items: donationType === "goods" ? items : undefined,
-      address: donationType === "goods" ? address : undefined
+    const saveDonation = async (paymentId) => {
+    try {
+        const donationData = {
+        donorId: user._id,
+        ngoId,
+        donationType: "money",
+        amount,
+        status: "completed"
+        };
+
+        await fetch(`${import.meta.env.VITE_API_URL}/api/donations`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(donationData)
+        });
+
+        alert("Donation Successful ❤️");
+
+    } catch (error) {
+        console.error(error);
+        alert("Failed to save donation");
+    }
     };
 
-    console.log("Donation Payload:", donationData);
+        
+    const openRazorpay = (order) => {
+        const options = {
+            key: "rzp_test_SDEDH4UJzGXYoy", // 👈 YOUR TEST KEY ID
+            amount: order.amount,
+            currency: "INR",
+            name: "Helpify",
+            description: "Donation Payment",
+            order_id: order.id,
 
-    // yahin baad me API call karoge
-  };
+            handler: function (response) {
+            console.log("Payment Success:", response);
+
+            // STEP 4 yahin call hoga 👇
+            saveDonation(response.razorpay_payment_id);
+            },
+
+            theme: {
+            color: "#0f172a"
+            }
+        };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+    };
+
+    const handleSubmit = async () => {
+    if (!amount || amount <= 0) {
+        alert("Please enter a valid amount");
+        return;
+    }
+
+    try {
+        // 1️⃣ Create order from backend
+        const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/payment/create-order`,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ amount })
+        }
+        );
+
+        const order = await res.json();
+
+        // 2️⃣ Open Razorpay checkout
+        openRazorpay(order);
+
+    } catch (error) {
+        console.error(error);
+        alert("Payment initiation failed");
+    }
+    };
+
 
   return (
     <>
