@@ -357,20 +357,10 @@
   margin-top: 0.5rem;
 }
 
-.ngo-status-badge.completed {
-  background: #d1fae5;
-  color: #065f46;
-}
+.ngo-status-badge.delivered { background: #dcfce7; color: #166534; }
+.ngo-status-badge.pending { background: #fef3c7; color: #92400e; }
+.ngo-status-badge.picked { background: #dbeafe; color: #1e40af; }
 
-.ngo-status-badge.processing {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.ngo-status-badge.delivered {
-  background: #dbeafe;
-  color: #1e40af;
-}
 
 .ngo-empty-state {
   text-align: center;

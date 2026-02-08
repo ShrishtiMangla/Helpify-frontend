@@ -7,8 +7,34 @@ const DeliveryAgentDashboard = () => {
   const [agent, setAgent] = useState(null);
   const [donations, setDonations] = useState([]);
   const [activeTab, setActiveTab] = useState("completed");
-  const [activeFilter, setActiveFilter] = useState("all");
   const [loading, setLoading] = useState(true);
+
+  const updateDeliveryStatus = async (donationId, newStatus) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/agent/donations/${donationId}`,
+        {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: newStatus }),
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to update status");
+
+      setDonations(prev =>
+        prev.map(d =>
+          d._id === donationId ? { ...d, status: newStatus } : d
+        )
+      );
+    } catch (err) {
+      console.error(err);
+      alert("Status update failed");
+    }
+  };
 
   // get logged-in agent
   useEffect(() => {
@@ -18,37 +44,36 @@ const DeliveryAgentDashboard = () => {
     }
   }, []);
 
-useEffect(() => {
-  if (!agent) return;
+  // fetch agent donations
+  useEffect(() => {
+    if (!agent) return;
 
-  fetch(`${import.meta.env.VITE_API_URL}/api/agent/donations`, {
-    method: "GET",
-    credentials: "include", // ✅ THIS SENDS COOKIES
-  })
-    .then(res => res.json())
-    .then(data => {
-      setDonations(Array.isArray(data) ? data : []);
-      setLoading(false);
+    fetch(`${import.meta.env.VITE_API_URL}/api/agent/donations`, {
+      method: "GET",
+      credentials: "include",
     })
-    .catch(err => {
-      console.error(err);
-      setLoading(false);
-    });
-}, [agent]);
-
-
+      .then(res => res.json())
+      .then(data => {
+        setDonations(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, [agent]);
 
   if (!agent || loading) {
     return <p className="agent-loading-text">Loading...</p>;
   }
 
-  // 🔹 split by status
+  // split by status
   const completedDeliveries = donations.filter(
-    d => d.status === "completed"
+    d => d.status === "delivered"
   );
 
   const scheduledDeliveries = donations.filter(
-    d => d.status === "pending" || d.status === "scheduled"
+    d => d.status !== "delivered"
   );
 
   const currentDeliveries =
@@ -56,12 +81,7 @@ useEffect(() => {
       ? completedDeliveries
       : scheduledDeliveries;
 
-  // 🔹 filter by type
-  const filteredDeliveries = currentDeliveries.filter(
-    d => activeFilter === "all" || d.donationType === activeFilter
-  );
-
-  // 🔹 stats
+  // stats
   const totalCompleted = completedDeliveries.length;
   const totalScheduled = scheduledDeliveries.length;
   const totalDeliveries = totalCompleted + totalScheduled;
@@ -72,7 +92,7 @@ useEffect(() => {
       <div className="py-8"></div>
 
       <main className="agent-dashboard-container">
-        {/* Agent Profile Header */}
+        {/* Agent Header */}
         <div className="agent-header">
           <div className="agent-info">
             <div className="agent-avatar">
@@ -113,7 +133,7 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* Quick Stats Cards */}
+        {/* Quick Stats */}
         <div className="agent-quick-stats">
           <div className="agent-stat-card completed">
             <div className="agent-stat-card-header">
@@ -170,80 +190,64 @@ useEffect(() => {
               ? "Completed Deliveries"
               : "Scheduled Deliveries"}
           </h2>
-
-          <div className="agent-filter-tabs">
-            {["all", "money", "goods"].map(type => (
-              <button
-                key={type}
-                className={`agent-filter-tab ${
-                  activeFilter === type ? "active" : ""
-                }`}
-                onClick={() => setActiveFilter(type)}
-              >
-                {type === "all" ? "All" : type}
-              </button>
-            ))}
-          </div>
         </div>
 
         <div className="agent-deliveries-list">
-          {filteredDeliveries.length > 0 ? (
-            filteredDeliveries.map(d => (
+          {currentDeliveries.length > 0 ? (
+            currentDeliveries.map(d => (
               <div key={d._id} className="agent-delivery-item">
                 <div className="agent-delivery-header">
-                  <div className="agent-delivery-main">
-                    {activeTab === "scheduled" && (
-                      <div className="scheduled-delivery-time">
-                        🕒 {d.scheduledDate} at {d.scheduledTime}
-                      </div>
-                    )}
-
-                    <span
-                      className={`agent-delivery-type-badge ${d.donationType}`}
-                    >
-                      {d.donationType === "money" ? "💵 Money" : "📦 Goods"}
-                    </span>
-
-                    <h4 className="agent-delivery-title">
-                      Donation #{d._id.slice(-6)}
-                    </h4>
-
-                    <div className="agent-delivery-route">
-                      <span>📍 {d.pickupLocation}</span>
-                      <span className="agent-delivery-route-arrow">→</span>
-                      <span>🏢 {d.deliveryLocation}</span>
-                    </div>
-                  </div>
-
+                  <h4 className="agent-delivery-title">
+                    Donation #{d._id.slice(-6)}
+                  </h4>
                   <div className="agent-delivery-amount">{d.amount}</div>
                 </div>
 
                 <div className="agent-delivery-details">
                   <div className="agent-detail-item">
-                    <span className="agent-detail-label">Donor Details</span>
+                    <span className="agent-detail-label">Donor</span>
                     <span className="agent-detail-value">
-                      👤 {d.donorId?.name}
-                    </span>
-                    <span className="agent-detail-value">
-                      📞 {d.donorId?.phone}
+                      {d.donorId?.username}
                     </span>
                   </div>
 
                   <div className="agent-detail-item">
-                    <span className="agent-detail-label">NGO Details</span>
+                    <span className="agent-detail-label">NGO</span>
                     <span className="agent-detail-value">
-                      🏢 {d.ngoId?.name}
-                    </span>
-                    <span className="agent-detail-value">
-                      📞 {d.ngoId?.phone}
+                      {d.ngoId?.name}
                     </span>
                   </div>
 
-                  <div className="agent-detail-item">
+                  <div className="agent-detail-item status-action-container">
                     <span className="agent-detail-label">Status</span>
-                    <span className={`agent-status-badge ${d.status}`}>
-                      {d.status}
-                    </span>
+
+                    <div className="status-row">
+                      <span className={`agent-status-badge ${d.status}`}>
+                        {d.status.toUpperCase()}
+                      </span>
+
+                      {d.donationType === "goods" && d.status === "pending" && (
+                        <button
+                          className="agent-action-btn picked"
+                          onClick={() =>
+                            updateDeliveryStatus(d._id, "picked")
+                          }
+                        >
+                          Mark as Picked
+                        </button>
+                      )}
+
+                      {d.donationType === "goods" && d.status === "picked" && (
+                        <button
+                          className="agent-action-btn delivered"
+                          onClick={() =>
+                            updateDeliveryStatus(d._id, "delivered")
+                          }
+                        >
+                          Mark as Delivered
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -251,7 +255,7 @@ useEffect(() => {
           ) : (
             <div className="agent-empty-state">
               <div className="agent-empty-state-icon">📭</div>
-              <p>No deliveries found for this filter</p>
+              <p>No deliveries found</p>
             </div>
           )}
         </div>

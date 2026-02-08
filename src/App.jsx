@@ -25,8 +25,7 @@ function App() {
       <Route path="/ngos" element={<NgoList />} />
       <Route path="/donate/:ngoId" element={<DonatePage />} />
       <Route path="/track/:donationId" element={<TrackDonation />} />
-
-    
+      
     </Routes>
   );
 }
