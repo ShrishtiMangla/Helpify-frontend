@@ -8,8 +8,12 @@ const DeliveryAgentDashboard = () => {
   const [donations, setDonations] = useState([]);
   const [activeTab, setActiveTab] = useState("completed");
   const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState(null);
 
+  // Update delivery status
   const updateDeliveryStatus = async (donationId, newStatus) => {
+    setUpdatingId(donationId);
+    
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/agent/donations/${donationId}`,
@@ -25,14 +29,19 @@ const DeliveryAgentDashboard = () => {
 
       if (!res.ok) throw new Error("Failed to update status");
 
+      // Update local state
       setDonations(prev =>
         prev.map(d =>
           d._id === donationId ? { ...d, status: newStatus } : d
         )
       );
+
+      alert(`Status updated to: ${newStatus}`);
     } catch (err) {
       console.error(err);
       alert("Status update failed");
+    } finally {
+      setUpdatingId(null);
     }
   };
 
@@ -92,7 +101,7 @@ const DeliveryAgentDashboard = () => {
       <div className="py-8"></div>
 
       <main className="agent-dashboard-container">
-        {/* Agent Header */}
+        {/* Agent Header - Matching User/NGO Structure */}
         <div className="agent-header">
           <div className="agent-info">
             <div className="agent-avatar">
@@ -111,9 +120,9 @@ const DeliveryAgentDashboard = () => {
                 {agent.name?.charAt(0).toUpperCase() + agent.name?.slice(1)}
               </h1>
 
-              <span className="agent-badge">
+              <p className="agent-badge">
                 🚚 Active Delivery Agent • Verified ✓
-              </span>
+              </p>
 
               <div className="agent-stats">
                 <div className="agent-stat-item">
@@ -197,25 +206,54 @@ const DeliveryAgentDashboard = () => {
             currentDeliveries.map(d => (
               <div key={d._id} className="agent-delivery-item">
                 <div className="agent-delivery-header">
-                  <h4 className="agent-delivery-title">
-                    Donation #{d._id.slice(-6)}
-                  </h4>
-                  <div className="agent-delivery-amount">{d.amount}</div>
+                  <div className="agent-delivery-main">
+                    <span className={`agent-delivery-type-badge ${d.donationType}`}>
+                      {d.donationType === "money" ? "💵 Money" : "📦 Goods"}
+                    </span>
+
+                    <h4 className="agent-delivery-title">
+                      Donation #{d._id.slice(-6)}
+                    </h4>
+
+                    {d.pickupLocation && d.deliveryLocation && (
+                      <div className="agent-delivery-route">
+                        <span>📍 {d.pickupLocation}</span>
+                        <span className="agent-delivery-route-arrow">→</span>
+                        <span>🏢 {d.deliveryLocation}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="agent-delivery-amount">
+                    {d.donationType === "money" 
+                      ? `₹${d.amount?.toLocaleString()}` 
+                      : d.amount || d.items}
+                  </div>
                 </div>
 
                 <div className="agent-delivery-details">
                   <div className="agent-detail-item">
                     <span className="agent-detail-label">Donor</span>
                     <span className="agent-detail-value">
-                      {d.donorId?.username}
+                      👤 {d.donorId?.username || d.donorId?.name}
                     </span>
+                    {d.donorId?.phone && (
+                      <span className="agent-detail-value">
+                        📞 {d.donorId.phone}
+                      </span>
+                    )}
                   </div>
 
                   <div className="agent-detail-item">
                     <span className="agent-detail-label">NGO</span>
                     <span className="agent-detail-value">
-                      {d.ngoId?.name}
+                      🏢 {d.ngoId?.name}
                     </span>
+                    {d.ngoId?.phone && (
+                      <span className="agent-detail-value">
+                        📞 {d.ngoId.phone}
+                      </span>
+                    )}
                   </div>
 
                   <div className="agent-detail-item status-action-container">
@@ -223,28 +261,27 @@ const DeliveryAgentDashboard = () => {
 
                     <div className="status-row">
                       <span className={`agent-status-badge ${d.status}`}>
-                        {d.status.toUpperCase()}
+                        {d.status.charAt(0).toUpperCase() + d.status.slice(1)}
                       </span>
 
-                      {d.donationType === "goods" && d.status === "pending" && (
+                      {/* Action buttons for goods donations */}
+                      {activeTab === "scheduled" && d.donationType === "goods" && d.status === "pending" && (
                         <button
                           className="agent-action-btn picked"
-                          onClick={() =>
-                            updateDeliveryStatus(d._id, "picked")
-                          }
+                          onClick={() => updateDeliveryStatus(d._id, "picked")}
+                          disabled={updatingId === d._id}
                         >
-                          Mark as Picked
+                          {updatingId === d._id ? "Updating..." : "📦 Goods Picked"}
                         </button>
                       )}
 
-                      {d.donationType === "goods" && d.status === "picked" && (
+                      {activeTab === "scheduled" && d.donationType === "goods" && d.status === "picked" && (
                         <button
                           className="agent-action-btn delivered"
-                          onClick={() =>
-                            updateDeliveryStatus(d._id, "delivered")
-                          }
+                          onClick={() => updateDeliveryStatus(d._id, "delivered")}
+                          disabled={updatingId === d._id}
                         >
-                          Mark as Delivered
+                          {updatingId === d._id ? "Updating..." : "✅ Mark as Delivered"}
                         </button>
                       )}
                     </div>

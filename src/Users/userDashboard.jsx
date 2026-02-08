@@ -4,12 +4,15 @@ import Footer from "../Components/Footer";
 import "./userDashboard.css";
 import { useNavigate } from "react-router-dom";
 
-
 const UserDashboard = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [activeFilter, setActiveFilter] = useState('all');
 
+  const [user, setUser] = useState(null);
+  const [donations, setDonations] = useState([]);
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [loading, setLoading] = useState(true);
+
+  // 🔹 Load logged-in user from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -17,78 +20,61 @@ const UserDashboard = () => {
     }
   }, []);
 
-  // Sample donations data
-  const donations = [
-    {
-      id: 'DN12345',
-      type: 'money',
-      title: 'Monthly Food Distribution Program',
-      ngo: 'Hope Foundation',
-      date: 'Jan 15, 2026',
-      amount: '₹5,000',
-      status: 'completed',
-      icon: '💵'
-    },
-    {
-      id: 'DN12344',
-      type: 'goods',
-      title: 'Educational Books & Stationery',
-      ngo: "Children's Charity",
-      date: 'Jan 10, 2026',
-      amount: '50 items',
-      status: 'completed',
-      icon: '📚'
-    },
-    {
-      id: 'DN12343',
-      type: 'money',
-      title: 'Medical Aid Fund',
-      ngo: 'Health Care Trust',
-      date: 'Jan 5, 2026',
-      amount: '₹10,000',
-      status: 'processing',
-      icon: '💵'
-    },
-    {
-      id: 'DN12342',
-      type: 'goods',
-      title: 'Winter Clothing Collection',
-      ngo: 'Warmth for All',
-      date: 'Dec 28, 2025',
-      amount: '25 items',
-      status: 'completed',
-      icon: '👕'
-    },
-    {
-      id: 'DN12341',
-      type: 'money',
-      title: 'Emergency Relief Fund',
-      ngo: 'Disaster Relief Org',
-      date: 'Dec 20, 2025',
-      amount: '₹15,000',
-      status: 'completed',
-      icon: '💵'
-    }
-  ];
+  // 🔹 Fetch user donations (PROTECTED ROUTE)
+  useEffect(() => {
+    if (!user) return;
 
-  const filteredDonations = donations.filter(donation =>
-    activeFilter === 'all' || donation.type === activeFilter
-  );
+    fetch(`${import.meta.env.VITE_API_URL}/api/user/donations`, {
+      method: "GET",
+      credentials: "include", // 🔥 sends JWT cookie
+    })
+      .then(res => res.json())
+      .then(data => {
+        setDonations(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, [user]);
 
-  if (!user) {
+  if (!user || loading) {
     return <p className="loading-text">Loading...</p>;
   }
+
+  /* =====================
+     🔢 DYNAMIC STATS
+  ====================== */
+  const totalDonations = donations.length;
+
+  const totalContributed = donations
+    .filter(d => d.donationType === "money")
+    .reduce((sum, d) => sum + (d.amount || 0), 0);
+
+  const ngosSupported = new Set(
+    donations.map(d => d.ngoId?._id)
+  ).size;
+
+  /* =====================
+     🔍 FILTER DONATIONS
+  ====================== */
+  const filteredDonations =
+    activeFilter === "all"
+      ? donations
+      : donations.filter(d => d.donationType === activeFilter);
 
   return (
     <div className="dashboard-container-wrapper">
       <Header />
       <div className="py-8"></div>
-      <main className="dashboard-container ">
-        {/* User Profile Header */}
+
+      <main className="dashboard-container">
+        {/* ================= USER HEADER ================= */}
         <div className="user-header">
           <div className="user-info">
             <div className="user-avatar">
-              {user?.username
+              {user.username
                 ?.split(" ")
                 .map(n => n[0])
                 .join("")
@@ -97,99 +83,118 @@ const UserDashboard = () => {
 
             <div className="user-details">
               <h1 className="user-name">
-                Welcome {user?.username?.charAt(0).toUpperCase() + user?.username?.slice(1)}
+                Welcome {user.username}
               </h1>
-
 
               <p className="user-subtext">
                 Making a difference, one contribution at a time
               </p>
+
               <div className="user-stats">
                 <div className="stat-item">
-                  <span className="stat-value">{user.totalDonations || 12}</span>
+                  <span className="stat-value">{totalDonations}</span>
                   <span className="stat-label">Total Donations</span>
                 </div>
+
                 <div className="stat-item">
-                  <span className="stat-value">₹{user.totalContributed || '45,000'}</span>
+                  <span className="stat-value">
+                    ₹{totalContributed.toLocaleString()}
+                  </span>
                   <span className="stat-label">Total Contributed</span>
                 </div>
+
                 <div className="stat-item">
-                  <span className="stat-value">{user.ngosSupported || 8}</span>
+                  <span className="stat-value">{ngosSupported}</span>
                   <span className="stat-label">NGOs Supported</span>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
 
-        {/* Donation Action Cards */}
+        {/* ================= ACTION CARDS ================= */}
         <div className="action-cards">
-          <div className="action-card" onClick={() => console.log('Donate Goods')}>
+          <div className="action-card">
             <div className="card-icon">📦</div>
             <h3 className="card-title">Donate Goods</h3>
             <p className="card-description">
-              Contribute items like clothes, books, food, or other essentials to help those in need.
+              Contribute items like clothes, books, food, or essentials.
             </p>
-            <button 
-            onClick={()=>navigate("/ngos?type=goods")} className="btn-action">Donate Goods</button>
+            <button
+              className="btn-action"
+              onClick={() => navigate("/ngos?type=goods")}
+            >
+              Donate Goods
+            </button>
           </div>
 
-          <div className="action-card" onClick={() => console.log('Donate Money')}>
+          <div className="action-card">
             <div className="card-icon">💰</div>
             <h3 className="card-title">Donate Money</h3>
             <p className="card-description">
-              Make a secure financial contribution to verified NGOs and track where your money goes.
+              Make secure financial contributions to verified NGOs.
             </p>
             <button
-            onClick={()=>navigate("/ngos?type=money")} className="btn-action">Donate Money</button>
+              className="btn-action"
+              onClick={() => navigate("/ngos?type=money")}
+            >
+              Donate Money
+            </button>
           </div>
         </div>
 
-        {/* Past Donations Section */}
+        {/* ================= DONATION HISTORY ================= */}
         <div className="section-header">
           <h2 className="section-title">Your Donation History</h2>
+
           <div className="filter-tabs">
-            <button
-              className={`filter-tab ${activeFilter === 'all' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('all')}
-            >
-              All
-            </button>
-            <button
-              className={`filter-tab ${activeFilter === 'money' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('money')}
-            >
-              Money
-            </button>
-            <button
-              className={`filter-tab ${activeFilter === 'goods' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('goods')}
-            >
-              Goods
-            </button>
+            {["all", "money", "goods"].map(type => (
+              <button
+                key={type}
+                className={`filter-tab ${
+                  activeFilter === type ? "active" : ""
+                }`}
+                onClick={() => setActiveFilter(type)}
+              >
+                {type.toUpperCase()}
+              </button>
+            ))}
           </div>
         </div>
 
         <div className="donations-list">
-          {filteredDonations.length > 0 ? (
-            filteredDonations.map(donation => (
-              <div key={donation.id} className="donation-item">
-                <div className={`donation-type ${donation.type}`}>
-                  {donation.icon}
+          {filteredDonations.length ? (
+            filteredDonations.map(d => (
+              <div key={d._id} className="donation-item">
+                <div className={`donation-type ${d.donationType}`}>
+                  {d.donationType === "money" ? "💰" : "📦"}
                 </div>
+
                 <div className="donation-details">
-                  <h4 className="donation-title">{donation.title}</h4>
+                  <h4 className="donation-title">
+                    {d.donationType === "money"
+                      ? "Money Donation"
+                      : d.items}
+                  </h4>
+
                   <div className="donation-meta">
-                    <span>🏢 {donation.ngo}</span>
-                    <span>📅 {donation.date}</span>
-                    <span>🆔 #{donation.id}</span>
+                    <span>🏢 {d.ngoId?.name}</span>
+                    <span>
+                      📅 {new Date(d.createdAt).toLocaleDateString()}
+                    </span>
+                    <span>🆔 #{d._id.slice(-6)}</span>
                   </div>
                 </div>
+
                 <div className="donation-amount-container">
-                  <div className="donation-amount">{donation.amount}</div>
-                  <span className={`status-badge ${donation.status}`}>
-                    {donation.status === 'completed' ? '✓ Completed' : '⏳ Processing'}
+                  <div className="donation-amount">
+                    {d.donationType === "money"
+                      ? `₹${d.amount}`
+                      : "Goods"}
+                  </div>
+
+                  <span className={`status-badge ${d.status}`}>
+                    {d.status.toUpperCase()}
                   </span>
                 </div>
               </div>
@@ -197,7 +202,7 @@ const UserDashboard = () => {
           ) : (
             <div className="empty-state">
               <div className="empty-state-icon">📭</div>
-              <p>No donations found for this filter</p>
+              <p>No donations found</p>
             </div>
           )}
         </div>

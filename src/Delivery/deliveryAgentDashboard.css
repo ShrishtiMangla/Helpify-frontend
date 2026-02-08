@@ -1,9 +1,6 @@
-/* =========================
-   GLOBAL WRAPPER
-========================= */
 .agent-dashboard-container-wrapper {
   min-height: 100vh;
-  background: linear-gradient(to bottom right, #fff7ed, #ffffff);
+  background: linear-gradient(to bottom right, white, #fff7ed);
 }
 
 .agent-dashboard-container {
@@ -12,29 +9,28 @@
   padding: 3rem 2rem;
 }
 
-/* =========================
-   AGENT HEADER
-========================= */
+/* Agent Header Styles - Matching User Dashboard Structure */
 .agent-header {
-  background: linear-gradient(135deg, #593927, #f97316);
+  background: linear-gradient(135deg, #49423e 0%, #f97316 100%);
   border-radius: 24px;
   padding: 3rem;
   color: white;
   margin-bottom: 2.5rem;
-  box-shadow: 0 12px 28px rgba(53, 25, 11, 0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   position: relative;
   overflow: hidden;
 }
 
 .agent-header::before {
-  content: "";
+  content: '';
   position: absolute;
-  top: -40%;
-  right: -15%;
-  width: 480px;
-  height: 480px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.15), transparent);
+  top: -50%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(251, 146, 60, 0.15) 0%, transparent 70%);
   border-radius: 50%;
+  pointer-events: none;
 }
 
 .agent-info {
@@ -46,37 +42,48 @@
 }
 
 .agent-avatar {
-  width: 96px;
-  height: 96px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #fb923c, #f97316);
+  background: linear-gradient(135deg, #f97316, #fb923c);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.4rem;
+  font-size: 2.5rem;
   font-weight: 700;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4);
+  flex-shrink: 0;
+}
+
+.agent-details {
+  flex: 1;
 }
 
 .agent-name {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 2.25rem;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  font-family: 'Playfair Display', serif;
+  color: white;
 }
 
 .agent-badge {
   display: inline-block;
-  margin-top: 0.4rem;
-  padding: 0.4rem 1rem;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 600;
   background: rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  opacity: 0.9;
 }
 
 .agent-stats {
   display: flex;
-  gap: 2.5rem;
-  margin-top: 1.2rem;
+  gap: 2rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
 }
 
 .agent-stat-item {
@@ -85,23 +92,48 @@
 }
 
 .agent-stat-value {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #fff7ed;
+  color: #fed7aa;
 }
 
 .agent-stat-label {
-  font-size: 0.8rem;
-  opacity: 0.85;
+  font-size: 0.875rem;
+  opacity: 0.8;
 }
 
-/* =========================
-   QUICK STATS
-========================= */
+.agent-profile-actions {
+  margin-top: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.agent-btn-profile {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.agent-btn-profile:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Quick Stats Cards */
 .agent-quick-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.6rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
   margin-bottom: 3rem;
 }
 
@@ -109,17 +141,18 @@
   background: white;
   border-radius: 20px;
   padding: 2rem;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
   border-left: 4px solid transparent;
-  transition: transform 0.25s ease;
 }
 
 .agent-stat-card:hover {
   transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .agent-stat-card.completed {
-  border-left-color: #22c55e;
+  border-left-color: #10b981;
 }
 
 .agent-stat-card.pending {
@@ -130,163 +163,274 @@
   border-left-color: #6366f1;
 }
 
+.agent-stat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.agent-stat-card-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.agent-stat-card-icon.completed {
+  background: linear-gradient(135deg, #d1fae5, #6ee7b7);
+}
+
+.agent-stat-card-icon.pending {
+  background: linear-gradient(135deg, #fef3c7, #fcd34d);
+}
+
+.agent-stat-card-icon.total {
+  background: linear-gradient(135deg, #ddd6fe, #a78bfa);
+}
+
 .agent-stat-card-value {
   font-size: 2rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #1a1a2e;
+  margin-bottom: 0.25rem;
 }
 
 .agent-stat-card-label {
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   color: #64748b;
-  margin-top: 0.3rem;
+  font-weight: 600;
 }
 
-/* =========================
-   TABS
-========================= */
+/* Tabs Section */
+.agent-tabs-container {
+  margin-bottom: 2rem;
+}
+
 .agent-main-tabs {
   display: flex;
   gap: 1rem;
   background: white;
   padding: 0.5rem;
-  border-radius: 14px;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-  margin-bottom: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
 }
 
 .agent-main-tab {
   flex: 1;
-  padding: 0.9rem;
+  padding: 1rem 2rem;
   border: none;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
   background: transparent;
   color: #64748b;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.agent-main-tab:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .agent-main-tab.active {
-  background: #ed712e;
+  background: #ea580c;
   color: white;
 }
 
-/* =========================
-   SECTION HEADER
-========================= */
+/* Section Headers */
 .agent-section-header {
-  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .agent-section-title {
   font-size: 2rem;
-  font-weight: 700;
-  color: #0f172a;
+  color: #1a1a2e;
+  font-family: 'Playfair Display', serif;
 }
 
-/* =========================
-   DELIVERIES LIST
-========================= */
+.agent-filter-tabs {
+  display: flex;
+  gap: 0.5rem;
+  background: white;
+  padding: 0.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.agent-filter-tab {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.agent-filter-tab:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.agent-filter-tab.active {
+  background: #ea580c;
+  color: white;
+}
+
+/* Deliveries List */
 .agent-deliveries-list {
   background: white;
-  border-radius: 22px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .agent-delivery-item {
-  padding: 2.4rem 2.6rem;
-  border-bottom: 1px solid #f1f5f9;
+  padding: 2rem;
+  border-bottom: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.agent-delivery-item:hover {
+  background: #fffbf5;
 }
 
 .agent-delivery-item:last-child {
   border-bottom: none;
 }
 
-.agent-delivery-item:hover {
-  background: #fffaf5;
-}
-
-/* =========================
-   DELIVERY HEADER
-========================= */
 .agent-delivery-header {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.agent-delivery-main {
+  flex: 1;
+  min-width: 250px;
+}
+
+.agent-delivery-type-badge {
+  display: inline-flex;
   align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.agent-delivery-type-badge.money {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.agent-delivery-type-badge.goods {
+  background: #fef3c7;
+  color: #92400e;
 }
 
 .agent-delivery-title {
-  font-size: 1.3rem;
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #1a1a2e;
   font-weight: 600;
-  color: #0f172a;
+}
+
+.agent-delivery-route {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.agent-delivery-route-arrow {
+  color: #ea580c;
+  font-weight: 700;
 }
 
 .agent-delivery-amount {
-  font-size: 1.6rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: #ea580c;
+  text-align: right;
 }
 
-/* =========================
-   DELIVERY DETAILS GRID
-========================= */
 .agent-delivery-details {
   display: grid;
-  grid-template-columns: 1.2fr 1.2fr 1fr;
-  gap: 2rem;
-  margin-top: 1.4rem;
-  padding-top: 1.2rem;
-  border-top: 1px dashed #e5e7eb;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
 }
 
 .agent-detail-item {
   display: flex;
   flex-direction: column;
+  gap: 0.25rem;
 }
 
 .agent-detail-label {
-  font-size: 0.7rem;
-  font-weight: 700;
+  font-size: 0.75rem;
   color: #64748b;
-  letter-spacing: 0.08em;
+  font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .agent-detail-value {
-  font-size: 1rem;
+  font-size: 0.95rem;
+  color: #1a1a2e;
   font-weight: 500;
-  color: #0f172a;
-  margin-top: 0.3rem;
-}
-
-/* =========================
-   STATUS + ACTION
-========================= */
-.status-action-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.status-row {
   display: flex;
   align-items: center;
-  gap: 2.6rem;
+  gap: 0.5rem;
 }
 
-/* STATUS BADGES */
 .agent-status-badge {
-  padding: 0.45rem 1.3rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+.agent-status-badge.completed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.agent-status-badge.delivered {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.agent-status-badge.scheduled {
+  background: #dbeafe;
+  color: #1e40af;
 }
 
 .agent-status-badge.pending {
-  background: #ffedd5;
-  color: #9a3412;
+  background: #fef3c7;
+  color: #92400e;
 }
 
 .agent-status-badge.picked {
@@ -294,61 +438,153 @@
   color: #92400e;
 }
 
-.agent-status-badge.delivered {
-  background: #dcfce7;
-  color: #166534;
+.agent-status-badge.picked-up {
+  background: #fef3c7;
+  color: #92400e;
 }
 
-/* =========================
-   ACTION BUTTONS
-========================= */
-.agent-action-btn {
-  padding: 0.55rem 1.6rem;
-  border-radius: 999px;
-  border: none;
-  font-size: 0.8rem;
+.agent-status-badge.in-progress {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Scheduled Deliveries */
+.scheduled-delivery-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fef3c7;
+  color: #92400e;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
   font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.priority-badge.high {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.priority-badge.medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.priority-badge.low {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+/* Action Buttons */
+.agent-delivery-actions {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.agent-action-btn {
+  padding: 0.875rem 1.75rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
   cursor: pointer;
-  background: linear-gradient(135deg, #ea580c, #f97316);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.agent-action-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.agent-action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.agent-action-btn.picked {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
   color: white;
-  box-shadow: 0 8px 20px rgba(234, 88, 12, 0.35);
-  transition: all 0.25s ease;
 }
 
-.agent-action-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 26px rgba(234, 88, 12, 0.45);
+.agent-action-btn.picked:hover:not(:disabled) {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
 }
 
-/* =========================
-   EMPTY STATE
-========================= */
+.agent-action-btn.delivered {
+  background: linear-gradient(135deg, #34d399, #10b981);
+  color: white;
+}
+
+.agent-action-btn.delivered:hover:not(:disabled) {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+/* Status Row for inline buttons */
+.status-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Empty State */
 .agent-empty-state {
-  padding: 4rem 2rem;
   text-align: center;
+  padding: 4rem 2rem;
   color: #64748b;
 }
 
 .agent-empty-state-icon {
-  font-size: 3.8rem;
-  opacity: 0.4;
+  font-size: 4rem;
   margin-bottom: 1rem;
+  opacity: 0.5;
 }
 
-/* =========================
-   LOADING
-========================= */
 .agent-loading-text {
   text-align: center;
-  margin-top: 3rem;
+  margin-top: 2.5rem;
   font-size: 1.25rem;
   color: #64748b;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* Responsive Styles */
 @media (max-width: 768px) {
+  .agent-dashboard-container {
+    padding: 2rem 1rem;
+  }
+
+  .agent-header {
+    padding: 2rem 1.5rem;
+  }
+
   .agent-info {
     flex-direction: column;
     text-align: center;
@@ -358,12 +594,69 @@
     justify-content: center;
   }
 
+  .agent-quick-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .agent-delivery-header {
+    flex-direction: column;
+  }
+
+  .agent-delivery-amount {
+    text-align: left;
+  }
+
   .agent-delivery-details {
     grid-template-columns: 1fr;
-    gap: 1.4rem;
+  }
+
+  .agent-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .agent-filter-tabs,
+  .agent-main-tabs {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .agent-filter-tab,
+  .agent-main-tab {
+    width: 100%;
   }
 
   .status-row {
-    gap: 1.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .agent-name {
+    font-size: 1.5rem;
+  }
+
+  .agent-section-title {
+    font-size: 1.5rem;
+  }
+
+  .agent-filter-tab,
+  .agent-main-tab {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .agent-delivery-item {
+    padding: 1.5rem;
+  }
+
+  .agent-delivery-actions {
+    flex-direction: column;
+  }
+
+  .agent-action-btn {
+    width: 100%;
+    justify-content: center;
   }
 }

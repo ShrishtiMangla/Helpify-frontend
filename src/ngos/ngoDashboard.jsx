@@ -73,7 +73,7 @@ const Ngo = () => {
       <div className="py-8"></div>
 
       <main className="ngo-dashboard-container">
-        {/* NGO HEADER */}
+        {/* NGO HEADER - Updated to match User Dashboard structure */}
         <div className="ngo-header">
           <div className="ngo-info">
             <div className="ngo-avatar">
@@ -81,13 +81,14 @@ const Ngo = () => {
                 ?.split(" ")
                 .map(n => n[0])
                 .join("")
-                .slice(0, 2)
-                .toUpperCase()}
+                .toUpperCase()
+                .slice(0, 2)}
             </div>
 
             <div className="ngo-details">
               <h1 className="ngo-name">{ngo.name}</h1>
-              <span className="ngo-type">Verified NGO ✓</span>
+              
+              <p className="ngo-type">Verified NGO ✓</p>
 
               <div className="ngo-stats">
                 <div className="ngo-stat-item">
@@ -95,9 +96,7 @@ const Ngo = () => {
                   <span className="ngo-stat-label">Total Donations</span>
                 </div>
                 <div className="ngo-stat-item">
-                  <span className="ngo-stat-value">
-                    ₹{totalMoneyReceived.toLocaleString()}
-                  </span>
+                  <span className="ngo-stat-value">₹{totalMoneyReceived.toLocaleString()}</span>
                   <span className="ngo-stat-label">Money Received</span>
                 </div>
                 <div className="ngo-stat-item">
@@ -121,7 +120,7 @@ const Ngo = () => {
                 }`}
                 onClick={() => setActiveFilter(type)}
               >
-                {type.toUpperCase()}
+                {type.charAt(0).toUpperCase() + type.slice(1)}
               </button>
             ))}
           </div>
@@ -133,9 +132,14 @@ const Ngo = () => {
             filteredDonations.map(d => (
               <div key={d._id} className="ngo-donation-item">
                 <div className="ngo-donation-header">
-                  <span className={`ngo-donation-type-badge ${d.donationType}`}>
-                    {d.donationType === "money" ? "💰 Money" : "📦 Goods"}
-                  </span>
+                  <div>
+                    <span className={`ngo-donation-type-badge ${d.donationType}`}>
+                      {d.donationType === "money" ? "💰 Money" : "📦 Goods"}
+                    </span>
+                    <h4 className="ngo-donation-title" style={{ marginTop: '0.5rem' }}>
+                      Donation #{d._id?.slice(-6)}
+                    </h4>
+                  </div>
 
                   <div className="ngo-donation-amount">
                     {d.donationType === "money"
@@ -148,7 +152,7 @@ const Ngo = () => {
                   <div className="ngo-detail-item">
                     <span className="ngo-detail-label">Donor</span>
                     <span className="ngo-detail-value">
-                      👤 {d.donorId?.username}
+                      👤 {d.donorId?.username || d.donorId?.name}
                     </span>
                     <span className="ngo-detail-value">
                       📧 {d.donorId?.email}
@@ -174,7 +178,7 @@ const Ngo = () => {
                   <div className="ngo-detail-item">
                     <span className="ngo-detail-label">Status</span>
                     <span className={`ngo-status-badge ${d.status}`}>
-                      {d.status.toUpperCase()}
+                      {d.status.charAt(0).toUpperCase() + d.status.slice(1)}
                     </span>
                   </div>
                 </div>
@@ -182,6 +186,7 @@ const Ngo = () => {
             ))
           ) : (
             <div className="ngo-empty-state">
+              <div className="ngo-empty-state-icon">📭</div>
               <p>No donations found</p>
             </div>
           )}

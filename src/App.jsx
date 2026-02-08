@@ -9,7 +9,7 @@ import Agent from "./Delivery/deliveryAgentDashboard";
 import AdminDashboard from "./Admin/adminDashboard";
 
 import NgoList from "./ngos/ngoList";
-import DonatePage from "./donation/donation";
+import DonatePage from "./donation/moneydonation";
 import TrackDonation from "./donation/trackDonations";
 
 function App() {

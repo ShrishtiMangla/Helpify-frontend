@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-import "./donation.css";
+import "./moneydonation.css";
 import { useNavigate } from "react-router-dom";
 
 const DonatePage = () => {
