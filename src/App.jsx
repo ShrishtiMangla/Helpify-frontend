@@ -2,6 +2,8 @@ import { Routes, Route } from "react-router-dom";
 import LandingPage from "./Home/LandingPage";
 import Login from "./Home/loginPage";
 import Signup from "./Home/signupPage";
+import About from "./Home/aboutpage";
+import Contact from "./Home/contactPage.jsx";
 
 import User from "./Users/userDashboard";
 import Ngo from "./ngos/ngoDashboard";
@@ -25,7 +27,8 @@ function App() {
       <Route path="/ngos" element={<NgoList />} />
       <Route path="/donate/:ngoId" element={<DonatePage />} />
       <Route path="/track/:donationId" element={<TrackDonation />} />
-      
+      <Route path = "/about" element={<About/>} />
+      <Route path = "/contact" element={<Contact/>} />
     </Routes>
   );
 }

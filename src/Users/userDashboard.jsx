@@ -83,8 +83,9 @@ const UserDashboard = () => {
 
             <div className="user-details">
               <h1 className="user-name">
-                Welcome {user.username}
-              </h1>
+  Welcome {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
+</h1>
+
 
               <p className="user-subtext">
                 Making a difference, one contribution at a time

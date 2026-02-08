@@ -3,141 +3,154 @@ import { useParams, useSearchParams } from "react-router-dom";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import "./moneydonation.css";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const DonatePage = () => {
-    const { ngoId } = useParams();
-    const [searchParams] = useSearchParams();
-    const donationType = searchParams.get("type"); // money / goods
+  const { ngoId } = useParams();
+  const [searchParams] = useSearchParams();
+  const donationType = searchParams.get("type"); // money / goods
 
-    const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user"));
 
-    // Common states
-    const [amount, setAmount] = useState("");
-    const [items, setItems] = useState("");
-    const [address, setAddress] = useState("");
+  // Common states
+  const [amount, setAmount] = useState("");
+  const [items, setItems] = useState("");
+  const [address, setAddress] = useState("");
 
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleGoodsDonation = async () => {
+  const handleGoodsDonation = async () => {
     if (!items || !address) {
-        alert("Please fill all details");
-        return;
+      alert("Please fill all details");
+      return;
     }
 
     try {
-        const res = await fetch(
+      const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/donations/goods`,
         {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
             donorId: user._id,
             ngoId,
             items,
             address
-            })
+          })
         }
-        );
+      );
 
-        const data = await res.json();
+      const data = await res.json();
 
-        alert("Delivery agent will reach you in 3–5 working days 🚚");
+      alert("Delivery agent will reach you in 3–5 working days 🚚");
 
-        // 👉 Navigate to tracking page
-        navigate(`/track/${data.donationId}`);
+      // 👉 Navigate to tracking page
+      navigate(`/track/${data.donationId}`);
 
     } catch (error) {
-        console.error(error);
-        alert("Failed to schedule delivery");
+      console.error(error);
+      alert("Failed to schedule delivery");
     }
-    };
+  };
 
 
-    const saveDonation = async (paymentId) => {
+  const saveDonation = async (paymentId) => {
     try {
-        const donationData = {
+      const donationData = {
         donorId: user._id,
         ngoId,
         donationType: "money",
         amount,
         status: "completed"
-        };
+      };
 
-        await fetch(`${import.meta.env.VITE_API_URL}/api/donations`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/donations`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(donationData)
-        });
+      });
 
-        alert("Donation Successful ❤️");
+      alert("Donation Successful ❤️");
 
     } catch (error) {
-        console.error(error);
-        alert("Failed to save donation");
+      console.error(error);
+      alert("Failed to save donation");
     }
+  };
+
+
+  const openRazorpay = (order) => {
+    const options = {
+      key: "rzp_test_SDEDH4UJzGXYoy",
+      amount: order.amount,
+      currency: "INR",
+      name: "Helpify",
+      description: "Donation Payment",
+      order_id: order.id,
+
+      handler: function (response) {
+        // ✅ PAYMENT SUCCESS
+        saveDonation(response.razorpay_payment_id);
+        navigate("/user/dashboard");
+      },
+
+      modal: {
+        ondismiss: function () {
+          alert("Payment cancelled ❌");
+        }
+      },
+
+      theme: {
+        color: "#0f172a"
+      }
     };
-
-        
-    const openRazorpay = (order) => {
-        const options = {
-            key: "rzp_test_SDEDH4UJzGXYoy", // 👈 YOUR TEST KEY ID
-            amount: order.amount,
-            currency: "INR",
-            name: "Helpify",
-            description: "Donation Payment",
-            order_id: order.id,
-
-            handler: function (response) {
-            console.log("Payment Success:", response);
-
-            // STEP 4 yahin call hoga 👇
-            saveDonation(response.razorpay_payment_id);
-            },
-
-            theme: {
-            color: "#0f172a"
-            }
-        };
 
     const rzp = new window.Razorpay(options);
-    rzp.open();
-    };
 
-    const handleSubmit = async () => {
+    // ❌ PAYMENT FAILED
+    rzp.on("payment.failed", function (response) {
+      console.error("Payment Failed:", response.error);
+      alert("Payment failed. Please try again.");
+    });
+
+    rzp.open();
+  };
+
+
+  const handleSubmit = async () => {
     if (!amount || amount <= 0) {
-        alert("Please enter a valid amount");
-        return;
+      alert("Please enter a valid amount");
+      return;
     }
 
     try {
-        // 1️⃣ Create order from backend
-        const res = await fetch(
+      // 1️⃣ Create order from backend
+      const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/payment/create-order`,
         {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ amount })
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount })
         }
-        );
+      );
 
-        const order = await res.json();
+      const order = await res.json();
 
-        // 2️⃣ Open Razorpay checkout
-        openRazorpay(order);
+      // 2️⃣ Open Razorpay checkout
+      openRazorpay(order);
 
     } catch (error) {
-        console.error(error);
-        alert("Payment initiation failed");
+      console.error(error);
+      alert("Payment initiation failed");
     }
-    };
+  };
 
 
   return (
     <>
       <Header />
-        <div className="py-4"></div>
+      <div className="py-4"></div>
       <main className="donate-page">
         <h1>Complete Your Donation</h1>
 
@@ -184,7 +197,17 @@ const DonatePage = () => {
             </button>
           </div>
         )}
+        {/* 🔙 BACK TO LOGGED-IN USER DASHBOARD */}
+        <div className="back-btn-container">
+          <Link
+            to={user ? "/user/dashboard" : "/login"}
+            className="back-dashboard-btn"
+          >
+            ← Back to Dashboard
+          </Link>
+        </div>
       </main>
+
 
       <Footer />
     </>

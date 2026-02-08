@@ -336,23 +336,41 @@
   margin-bottom: 0.5rem;
 }
 
+/* ===== STATUS BADGES ===== */
 .status-badge {
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 1.2rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  white-space: nowrap;
 }
 
+/* ✅ COMPLETED / DELIVERED */
+.status-badge.delivered,
 .status-badge.completed {
-  background: #d1fae5;
+  background: linear-gradient(135deg, #bbf7d0, #22c55e);
   color: #065f46;
 }
 
-.status-badge.processing {
-  background: #fef3c7;
+/* 🚚 PICKED */
+.status-badge.picked {
+  background: linear-gradient(135deg, #fde68a, #facc15);
   color: #92400e;
 }
+
+/* ⏳ PENDING */
+.status-badge.pending {
+  background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+  color: #1e3a8a;
+}
+
+
+
 
 .empty-state {
   text-align: center;

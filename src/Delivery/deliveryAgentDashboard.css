@@ -376,16 +376,18 @@
 
 .agent-delivery-details {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;            /* ⬇️ tighter */
+  margin-top: 0.75rem; /* ⬇️ less vertical space */
 }
+
 
 .agent-detail-item {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.15rem;     /* ⬇️ reduced gap */
 }
+
 
 .agent-detail-label {
   font-size: 0.75rem;
@@ -396,13 +398,15 @@
 }
 
 .agent-detail-value {
-  font-size: 0.95rem;
-  color: #1a1a2e;
-  font-weight: 500;
+  font-size: 1.05rem;              /* ⬆️ bigger text */
+  color: #0f172a;                  /* slightly darker */
+  font-weight: 600;                /* more readable */
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  line-height: 1.3;
 }
+
 
 .agent-status-badge {
   padding: 0.5rem 1rem;
@@ -545,15 +549,17 @@
 .status-action-container {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.3rem;   /* tighter */
 }
+
 
 .status-row {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;  /* cleaner inline look */
   flex-wrap: wrap;
 }
+
 
 /* Empty State */
 .agent-empty-state {
