@@ -56,7 +56,7 @@ const AdminDashboard = () => {
   const goodsDonations = donations.filter(d => d.donationType === "goods");
   
   const totalMoneyReceived = moneyDonations
-    .filter(d => d.status === "delivered")
+    .filter(d => d.status === "completed")
     .reduce((sum, d) => sum + (d.amount || 0), 0);
 
   /* =====================
