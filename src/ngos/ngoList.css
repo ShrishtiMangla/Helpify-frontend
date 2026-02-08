@@ -56,9 +56,9 @@
 
 .ngo-name {
   margin-top: 1rem;
-  font-size: 1.2rem;
+  font-size: 1.5rem !important;
   font-weight: 700;
-  color: #0f172a;
+  color: #0f172a !important;
 }
 
 .ngo-category {
